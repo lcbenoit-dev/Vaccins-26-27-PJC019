@@ -38,8 +38,6 @@ body{
     margin:0 auto 15px auto;
 }
 
-}
-
 h1{
     color:#003366;
     margin:0;
@@ -103,8 +101,6 @@ button:hover{
     margin-top:10px;
 }
 
-}
-
 </style>
 </head>
 
@@ -116,15 +112,12 @@ button:hover{
 
 <div class="header">
 
-logo-jean-coutu.png
+<img src="logo-jean-coutu.png" alt="Jean Coutu" class="logo">
 
 <h1>
 Quel vaccin prescrire?<br>
 PJC019 - Saison 2026-2027
 </h1>
-
-</div>
-
 
 </div>
 
@@ -136,22 +129,6 @@ PJC019 - Saison 2026-2027
 <p class="age">
 Âge calculé : <span id="ageAffiche">-</span> ans
 </p>
-
-function afficherAge(){
-
-    const dateNaissance =
-        document.getElementById("dob").value;
-
-    if(!dateNaissance){
-        document.getElementById("ageAffiche").innerHTML = "-";
-        return;
-    }
-
-    const age = calculAge(dateNaissance);
-
-    document.getElementById("ageAffiche").innerHTML = age;
-}
-
 
 <hr>
 
@@ -207,10 +184,26 @@ Vérifier l'admissibilité
 
 <script>
 
+function afficherAge(){
+
+    const dateNaissance =
+        document.getElementById("dob").value;
+
+    if(!dateNaissance){
+        document.getElementById("ageAffiche").innerHTML = "-";
+        return;
+    }
+
+    const age = calculAge(dateNaissance);
+
+    document.getElementById("ageAffiche").innerHTML = age;
+}
+
 function calculAge(dateNaissance){
 
     const aujourd = new Date();
-    const naissance = new Date(dateNaissance);
+    const [annee, moisN, jour] = dateNaissance.split("-").map(Number);
+    const naissance = new Date(annee, moisN - 1, jour);
 
     let age =
         aujourd.getFullYear() -
