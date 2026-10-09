@@ -155,11 +155,6 @@ Travailleur de la santé
 Déjà reçu un vaccin contre le pneumocoque
 </label>
 
-<label>
-<input type="checkbox" id="c14">
-Toutes les questions ont été posées
-</label>
-
 <br>
 
 <button onclick="calculer()">
@@ -263,22 +258,20 @@ function calculer(){
         .length;
 
     const c16 =
-        (c4 >= 75 && c14)
+        (c4 >= 75)
         ? "Oui"
         : "Non";
 
     const c17 =
-        !c14
         ? "NON"
         : (nbFacteurs > 0 ? "OUI" : "NON");
 
     const c18 =
-        (!c14 || c17==="OUI" || c16==="Oui")
+        (|| c17==="OUI" || c16==="Oui")
         ? "NON"
         : "OUI";
 
     const c19 =
-        !c14
         ? "NON"
         : (
             c5 ||
@@ -298,7 +291,6 @@ function calculer(){
         : (c14 ? "OUI" : "NON");
 
     const c21 =
-        !c14
         ? "NON"
         : (c5 ? "OUI" : "NON");
 
@@ -307,13 +299,11 @@ function calculer(){
         ? "NON"
         : (
             c4 >= 60 &&
-            c14
         )
         ? "OUI"
         : "NON";
 
     const c23 =
-        !c14
         ? "NON"
         : c13
         ? "NON"
@@ -330,7 +320,6 @@ function calculer(){
     const c24 =
         (
             c23 === "NON" &&
-            c14 &&
             !c13 &&
             c4 >= 18
         )
@@ -338,7 +327,6 @@ function calculer(){
         : "NON";
 
     const c25 =
-        !c14
         ? "NON"
         : (
             c4 >= 71 ||
