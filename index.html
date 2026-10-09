@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur d'éligibilité vaccinale</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    color:#003366;
+    margin-top:0;
+}
+
+h2{
+    color:#003366;
+}
+
+h3{
+    color:#205080;
+}
+
+label{
+    display:block;
+    margin:10px 0;
+}
+
+input[type="date"]{
+    padding:8px;
+    font-size:16px;
+}
+
+button{
+    background:#0066cc;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0052a3;
+}
+
+.resultat{
+    margin-top:20px;
+}
+
+.admissible{
+    background:#e8f5e9;
+    border-left:5px solid #2e7d32;
+    padding:10px;
+    margin:8px 0;
+    border-radius:6px;
+}
+
+.non-admissible{
+    background:#ffebee;
+    border-left:5px solid #c62828;
+    padding:10px;
+    margin:8px 0;
+    border-radius:6px;
+}
+
+.age{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.avertissement{
+    background:#fff3cd;
+    border-left:5px solid #ff9800;
+    padding:12px;
+    margin-bottom:20px;
+    border-radius:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Calculateur d'éligibilité vaccinale</h1>
+
+<div class="avertissement">
+⚠️ La case <strong>« Toutes les questions ont été posées »</strong> doit être cochée pour obtenir un résultat valide.
+</div>
+
+<label>
+<strong>Date de naissance</strong><br>
+<input type="date" id="dob">
+</label>
+
+<hr>
+
+<h2>Facteurs d'admissibilité</h2>
+
+<label>
+<input type="checkbox" id="c6">
+Diabète, asthme grave, maladie pulmonaire chronique, insuffisance rénale ou cardiaque ou IMC > 40
+</label>
+
+<label>
+<input type="checkbox" id="c7">
+Immunosuppression importante
+</label>
+
+<label>
+<input type="checkbox" id="c8">
+Habite dans une résidence pour aînés
+</label>
+
+<label>
+<input type="checkbox" id="c9">
+Grossesse (2e ou 3e trimestre)
+</label>
+
+<label>
+<input type="checkbox" id="c10">
+Proche aidant ou habite avec une personne à risque
+</label>
+
+<label>
+<input type="checkbox" id="c12">
+Travailleur de la santé
+</label>
+
+<label>
+<input type="checkbox" id="c13">
+Déjà reçu un vaccin contre le pneumocoque
+</label>
+
+<label>
+<input type="checkbox" id="c14">
+Toutes les questions ont été posées
+</label>
+
+<br>
+
+<button onclick="calculer()">
+Vérifier l'admissibilité
+</button>
+
+</div>
+
+<div class="card resultat" id="resultat">
+
+</div>
+
+</div>
+
+<script>
+
+function calculAge(dateNaissance){
+
+    const aujourd = new Date();
+    const naissance = new Date(dateNaissance);
+
+    let age =
+        aujourd.getFullYear() -
+        naissance.getFullYear();
+
+    const mois =
+        aujourd.getMonth() -
+        naissance.getMonth();
+
+    if(
+        mois < 0 ||
+        (
+            mois === 0 &&
+            aujourd.getDate() < naissance.getDate()
+        )
+    ){
+        age--;
+    }
+
+    return age;
+}
+
+function carte(titre,valeur){
+
+    const admissible =
+        valeur === "OUI" ||
+        valeur === "Oui";
+
+    return `
+        <div class="${admissible ? 'admissible' : 'non-admissible'}">
+            ${admissible ? '✅' : '❌'}
+            <strong>${titre}</strong>
+        </div>
+    `;
+}
+
+function calculer(){
+
+    const dateNaissance =
+        document.getElementById("dob").value;
+
+    if(!dateNaissance){
+        alert("Veuillez entrer une date de naissance.");
+        return;
+    }
+
+    const c4 = calculAge(dateNaissance);
+
+    const c5 = c4 >= 75;
+
+    const c6 =
+        document.getElementById("c6").checked;
+
+    const c7 =
+        document.getElementById("c7").checked;
+
+    const c8 =
+        document.getElementById("c8").checked;
+
+    const c9 =
+        document.getElementById("c9").checked;
+
+    const c10 =
+        document.getElementById("c10").checked;
+
+    const c11 =
+        c4 >= 65 && c4 <= 74;
+
+    const c12 =
+        document.getElementById("c12").checked;
+
+    const c13 =
+        document.getElementById("c13").checked;
+
+    const c14 =
+        document.getElementById("c14").checked;
+
+    const nbFacteurs =
+        [c6,c7,c8,c9,c10,c11,c12]
+        .filter(Boolean)
+        .length;
+
+    const c16 =
+        (c4 >= 75 && c14)
+        ? "Oui"
+        : "Non";
+
+    const c17 =
+        !c14
+        ? "NON"
+        : (nbFacteurs > 0 ? "OUI" : "NON");
+
+    const c18 =
+        (!c14 || c17==="OUI" || c16==="Oui")
+        ? "NON"
+        : "OUI";
+
+    const c19 =
+        !c14
+        ? "NON"
+        : (
+            c5 ||
+            c6 ||
+            c8 ||
+            c9 ||
+            c7 ||
+            c11 ||
+            c12
+        )
+        ? "OUI"
+        : "NON";
+
+    const c20 =
+        (c17==="OUI")
+        ? "NON"
+        : (c14 ? "OUI" : "NON");
+
+    const c21 =
+        !c14
+        ? "NON"
+        : (c5 ? "OUI" : "NON");
+
+    const c22 =
+        (c21==="OUI")
+        ? "NON"
+        : (
+            c4 >= 60 &&
+            c14
+        )
+        ? "OUI"
+        : "NON";
+
+    const c23 =
+        !c14
+        ? "NON"
+        : c13
+        ? "NON"
+        : (
+            c4 >= 65 ||
+            (
+                c4 >= 50 &&
+                (c6 || c7)
+            )
+        )
+        ? "OUI"
+        : "NON";
+
+    const c24 =
+        (
+            c23 === "NON" &&
+            c14 &&
+            !c13 &&
+            c4 >= 18
+        )
+        ? "OUI"
+        : "NON";
+
+    const c25 =
+        !c14
+        ? "NON"
+        : (
+            c4 >= 71 ||
+            (
+                c4 >= 18 &&
+                c7
+            )
+        )
+        ? "OUI"
+        : "NON";
+
+    const c26 =
+        (c25 === "OUI")
+        ? "NON"
+        : (
+            c4 >= 50 &&
+            c14
+        )
+        ? "OUI"
+        : "NON";
+
+    document.getElementById("resultat").innerHTML = `
+
+        <h2>Résultats</h2>
+
+        <p class="age">
+            Âge : ${c4} ans
+        </p>
+
+        <h3>Influenza</h3>
+
+        ${carte(
+            "Vaccin gratuit PQI‑Fluad (recommandé pour 75 ans et plus)",
+            c16
+        )}
+
+        ${carte(
+            "Vaccin gratuit PQI‑Fluzone",
+            c17
+        )}
+
+        ${carte(
+            "Vaccin avec frais Fluzone (40 $ total)",
+            c18
+        )}
+
+        <h3>COVID‑19</h3>
+
+        ${carte(
+            "Vaccin gratuit PQI‑Spikevax",
+            c19
+        )}
+
+        ${carte(
+            "Vaccin avec frais Comirnaty (163 $ total)",
+            c20
+        )}
+
+        <h3>Virus respiratoire syncytial (VRS)</h3>
+
+        ${carte(
+            "Vaccin gratuit PQI‑mResvia",
+            c21
+        )}
+
+        ${carte(
+            "Vaccin avec frais Abrysvo (299 $ total)",
+            c22
+        )}
+
+        <h3>Pneumocoque</h3>
+
+        ${carte(
+            "Vaccin gratuit PQI‑Capvaxive",
+            c23
+        )}
+
+        ${carte(
+            "Vaccin avec frais Capvaxive (186 $ total)",
+            c24
+        )}
+
+        <h3>Zona</h3>
+
+        ${carte(
+            "Vaccin gratuit PQI‑Shingrix",
+            c25
+        )}
+
+        ${carte(
+            "Vaccin avec frais Shingrix (239 $ par dose × 2 doses)",
+            c26
+        )}
+    `;
+}
+
+</script>
+
+</body>
+</html>
