@@ -33,8 +33,11 @@ body{
 }
 
 .logo{
-    max-width:220px;
-    margin-bottom:10px;
+    max-width:320px;
+    display:block;
+    margin:0 auto 15px auto;
+}
+
 }
 
 h1{
@@ -91,8 +94,15 @@ button:hover{
 }
 
 .age{
-    font-size:22px;
+    font-size:24px;
     font-weight:bold;
+    color:#005eb8;
+    background:#eef5ff;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
 }
 
 </style>
@@ -106,24 +116,42 @@ button:hover{
 
 <div class="header">
 
-<!-- Remplacer logo-jean-coutu.png par ton vrai logo -->
-
-<img src="logo-jean-coutu.png"
-     class="logo"
-     alt="Jean Coutu"
-     onerror="this.style.display='none';">
+logo-jean-coutu.png
 
 <h1>
-Quel vaccin prescrire<br>
-PJC019 - saison 2026-2027
+Quel vaccin prescrire?<br>
+PJC019 - Saison 2026-2027
 </h1>
+
+</div>
+
 
 </div>
 
 <label>
 <strong>Date de naissance</strong><br>
-<input type="date" id="dob">
+<input type="date" id="dob" onchange="afficherAge()">
 </label>
+
+<p class="age">
+Âge calculé : <span id="ageAffiche">-</span> ans
+</p>
+
+function afficherAge(){
+
+    const dateNaissance =
+        document.getElementById("dob").value;
+
+    if(!dateNaissance){
+        document.getElementById("ageAffiche").innerHTML = "-";
+        return;
+    }
+
+    const age = calculAge(dateNaissance);
+
+    document.getElementById("ageAffiche").innerHTML = age;
+}
+
 
 <hr>
 
