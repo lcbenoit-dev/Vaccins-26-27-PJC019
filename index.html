@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Quel vaccin prescrire - PJC019 - saison 2026-2027</title>
 
 <style>
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f4f6f9;
     margin:0;
     padding:20px;
+    background:#f4f6f9;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 .container{
@@ -21,79 +22,77 @@ body{
 
 .card{
     background:white;
-    padding:20px;
+    padding:25px;
     border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    max-width:220px;
+    margin-bottom:10px;
 }
 
 h1{
     color:#003366;
-    margin-top:0;
+    margin:0;
 }
 
 h2{
     color:#003366;
 }
 
-h3{
-    color:#205080;
-}
-
 label{
     display:block;
-    margin:10px 0;
+    margin:12px 0;
 }
 
-input[type="date"]{
-    padding:8px;
+input[type=date]{
+    padding:10px;
     font-size:16px;
 }
 
 button{
-    background:#0066cc;
+    background:#005eb8;
     color:white;
     border:none;
-    padding:12px 20px;
     border-radius:8px;
+    padding:12px 20px;
     font-size:16px;
     cursor:pointer;
 }
 
 button:hover{
-    background:#0052a3;
-}
-
-.resultat{
-    margin-top:20px;
+    background:#00488d;
 }
 
 .admissible{
     background:#e8f5e9;
-    border-left:5px solid #2e7d32;
-    padding:10px;
+    border-left:6px solid #2e7d32;
+    padding:12px;
     margin:8px 0;
     border-radius:6px;
 }
 
-.non-admissible{
+.nonadmissible{
     background:#ffebee;
-    border-left:5px solid #c62828;
-    padding:10px;
+    border-left:6px solid #c62828;
+    padding:12px;
     margin:8px 0;
     border-radius:6px;
+}
+
+.section{
+    margin-top:25px;
 }
 
 .age{
-    font-size:20px;
+    font-size:22px;
     font-weight:bold;
-}
-
-.avertissement{
-    background:#fff3cd;
-    border-left:5px solid #ff9800;
-    padding:12px;
-    margin-bottom:20px;
-    border-radius:6px;
 }
 
 </style>
@@ -105,7 +104,21 @@ button:hover{
 
 <div class="card">
 
-<h1>Quel vaccin prescrire - PJC019 - saison 2026-2027</h1>
+<div class="header">
+
+<!-- Remplacer logo-jean-coutu.png par ton vrai logo -->
+
+<img src="logo-jean-coutu.png"
+     class="logo"
+     alt="Jean Coutu"
+     onerror="this.style.display='none';">
+
+<h1>
+Quel vaccin prescrire<br>
+PJC019 - saison 2026-2027
+</h1>
+
+</div>
 
 <label>
 <strong>Date de naissance</strong><br>
@@ -114,11 +127,12 @@ button:hover{
 
 <hr>
 
-<h2>Facteurs d'admissibilité</h2>
+<h2>Facteurs de risque</h2>
 
 <label>
 <input type="checkbox" id="c6">
-Diabète, asthme grave, maladie pulmonaire chronique, insuffisance rénale ou cardiaque ou IMC > 40
+Diabète, asthme grave, maladie pulmonaire chronique,
+insuffisance cardiaque ou rénale, IMC > 40
 </label>
 
 <label>
@@ -128,7 +142,7 @@ Immunosuppression importante
 
 <label>
 <input type="checkbox" id="c8">
-Habite dans une résidence pour aînés
+Résidence pour aînés
 </label>
 
 <label>
@@ -159,9 +173,7 @@ Vérifier l'admissibilité
 
 </div>
 
-<div class="card resultat" id="resultat">
-
-</div>
+<div class="card section" id="resultat"></div>
 
 </div>
 
@@ -193,14 +205,10 @@ function calculAge(dateNaissance){
     return age;
 }
 
-function carte(titre,valeur){
-
-    const admissible =
-        valeur === "OUI" ||
-        valeur === "Oui";
+function carte(titre,admissible){
 
     return `
-        <div class="${admissible ? 'admissible' : 'non-admissible'}">
+        <div class="${admissible ? 'admissible':'nonadmissible'}">
             ${admissible ? '✅' : '❌'}
             <strong>${titre}</strong>
         </div>
@@ -217,9 +225,7 @@ function calculer(){
         return;
     }
 
-    const c4 = calculAge(dateNaissance);
-
-    const c5 = c4 >= 75;
+    const age = calculAge(dateNaissance);
 
     const c6 =
         document.getElementById("c6").checked;
@@ -236,186 +242,106 @@ function calculer(){
     const c10 =
         document.getElementById("c10").checked;
 
-    const c11 =
-        c4 >= 65 && c4 <= 74;
-
     const c12 =
         document.getElementById("c12").checked;
 
-    const c13 =
+    const dejaPneumo =
         document.getElementById("c13").checked;
 
-    const c14 =
-        document.getElementById("c14").checked;
+    const age75 = age >= 75;
+    const age6574 = age >= 65 && age <= 74;
 
     const nbFacteurs =
-        [c6,c7,c8,c9,c10,c11,c12]
+        [c6,c7,c8,c9,c10,age6574,c12]
         .filter(Boolean)
         .length;
 
-    const c16 =
-        (c4 >= 75)
-        ? "Oui"
-        : "Non";
+    const fluad =
+        age75;
 
-    const c17 =
-        ? "NON"
-        : (nbFacteurs > 0 ? "OUI" : "NON");
+    const fluzonePQI =
+        nbFacteurs > 0;
 
-    const c18 =
-        (|| c17==="OUI" || c16==="Oui")
-        ? "NON"
-        : "OUI";
+    const fluzonePrive =
+        !(fluad || fluzonePQI);
 
-    const c19 =
-        ? "NON"
-        : (
-            c5 ||
-            c6 ||
-            c8 ||
-            c9 ||
-            c7 ||
-            c11 ||
-            c12
-        )
-        ? "OUI"
-        : "NON";
+    const spikevaxPQI =
+        age75 ||
+        c6 ||
+        c7 ||
+        c8 ||
+        c9 ||
+        age6574 ||
+        c12;
 
-    const c20 =
-        (c17==="OUI")
-        ? "NON"
-        : (c14 ? "OUI" : "NON");
+    const comirnatyPrive =
+        !spikevaxPQI && age >= 12;
 
-    const c21 =
-        ? "NON"
-        : (c5 ? "OUI" : "NON");
+    const mresviaPQI =
+        age75;
 
-    const c22 =
-        (c21==="OUI")
-        ? "NON"
-        : (
-            c4 >= 60 &&
-        )
-        ? "OUI"
-        : "NON";
+    const abrysvoPrive =
+        !mresviaPQI && age >= 60;
 
-    const c23 =
-        ? "NON"
-        : c13
-        ? "NON"
-        : (
-            c4 >= 65 ||
+    const capvaxivePQI =
+        !dejaPneumo &&
+        (
+            age >= 65 ||
             (
-                c4 >= 50 &&
+                age >= 50 &&
                 (c6 || c7)
             )
-        )
-        ? "OUI"
-        : "NON";
+        );
 
-    const c24 =
+    const capvaxivePrive =
+        !capvaxivePQI &&
+        !dejaPneumo &&
+        age >= 18;
+
+    const shingrixPQI =
+        age >= 71 ||
         (
-            c23 === "NON" &&
-            !c13 &&
-            c4 >= 18
-        )
-        ? "OUI"
-        : "NON";
+            age >= 18 &&
+            c7
+        );
 
-    const c25 =
-        ? "NON"
-        : (
-            c4 >= 71 ||
-            (
-                c4 >= 18 &&
-                c7
-            )
-        )
-        ? "OUI"
-        : "NON";
-
-    const c26 =
-        (c25 === "OUI")
-        ? "NON"
-        : (
-            c4 >= 50 &&
-            c14
-        )
-        ? "OUI"
-        : "NON";
+    const shingrixPrive =
+        !shingrixPQI &&
+        age >= 50;
 
     document.getElementById("resultat").innerHTML = `
 
         <h2>Résultats</h2>
 
         <p class="age">
-            Âge : ${c4} ans
+        Âge : ${age} ans
         </p>
 
         <h3>Influenza</h3>
 
-        ${carte(
-            "Vaccin gratuit PQI‑Fluad (recommandé pour 75 ans et plus)",
-            c16
-        )}
+        ${carte("PQI-Fluad gratuit", fluad)}
+        ${carte("PQI-Fluzone gratuit", fluzonePQI)}
+        ${carte("Fluzone avec frais (40 $)", fluzonePrive)}
 
-        ${carte(
-            "Vaccin gratuit PQI‑Fluzone",
-            c17
-        )}
+        <h3>COVID-19</h3>
 
-        ${carte(
-            "Vaccin avec frais Fluzone (40 $ total)",
-            c18
-        )}
-
-        <h3>COVID‑19</h3>
-
-        ${carte(
-            "Vaccin gratuit PQI‑Spikevax",
-            c19
-        )}
-
-        ${carte(
-            "Vaccin avec frais Comirnaty (163 $ total)",
-            c20
-        )}
+        ${carte("PQI-Spikevax gratuit", spikevaxPQI)}
+        ${carte("Comirnaty avec frais (163 $)", comirnatyPrive)}
 
         <h3>Virus respiratoire syncytial (VRS)</h3>
 
-        ${carte(
-            "Vaccin gratuit PQI‑mResvia",
-            c21
-        )}
-
-        ${carte(
-            "Vaccin avec frais Abrysvo (299 $ total)",
-            c22
-        )}
+        ${carte("PQI-mResvia gratuit", mresviaPQI)}
+        ${carte("Abrysvo avec frais (299 $)", abrysvoPrive)}
 
         <h3>Pneumocoque</h3>
 
-        ${carte(
-            "Vaccin gratuit PQI‑Capvaxive",
-            c23
-        )}
-
-        ${carte(
-            "Vaccin avec frais Capvaxive (186 $ total)",
-            c24
-        )}
+        ${carte("PQI-Capvaxive gratuit", capvaxivePQI)}
+        ${carte("Capvaxive avec frais (186 $)", capvaxivePrive)}
 
         <h3>Zona</h3>
 
-        ${carte(
-            "Vaccin gratuit PQI‑Shingrix",
-            c25
-        )}
-
-        ${carte(
-            "Vaccin avec frais Shingrix (239 $ par dose × 2 doses)",
-            c26
-        )}
+        ${carte("PQI-Shingrix gratuit", shingrixPQI)}
+        ${carte("Shingrix avec frais (239 $ x 2 doses)", shingrixPrive)}
     `;
 }
 
