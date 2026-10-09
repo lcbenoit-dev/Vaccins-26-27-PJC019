@@ -87,6 +87,12 @@ button:hover{
     border-radius:6px;
 }
 
+.criteres{
+    font-size:14px;
+    color:#444;
+    margin-top:6px;
+}
+
 .section{
     margin-top:25px;
 }
@@ -170,6 +176,11 @@ Travailleur de la santé
 Déjà reçu un vaccin contre le pneumocoque
 </label>
 
+<label>
+<input type="checkbox" id="c14">
+Déjà reçu deux doses de vaccin contre le zona
+</label>
+
 <br>
 
 <button onclick="calculer()">
@@ -226,12 +237,13 @@ function calculAge(dateNaissance){
     return age;
 }
 
-function carte(titre,admissible){
+function carte(titre,admissible,criteres){
 
     return `
         <div class="${admissible ? 'admissible':'nonadmissible'}">
             ${admissible ? '✅' : '❌'}
             <strong>${titre}</strong>
+            <div class="criteres">${criteres}</div>
         </div>
     `;
 }
@@ -268,6 +280,9 @@ function calculer(){
 
     const dejaPneumo =
         document.getElementById("c13").checked;
+
+    const dejaZona =
+        document.getElementById("c14").checked;
 
     const age75 = age >= 75;
     const age6574 = age >= 65 && age <= 74;
@@ -320,14 +335,18 @@ function calculer(){
         age >= 18;
 
     const shingrixPQI =
-        age >= 71 ||
+        !dejaZona &&
         (
-            age >= 18 &&
-            c7
+            age >= 71 ||
+            (
+                age >= 18 &&
+                c7
+            )
         );
 
     const shingrixPrive =
         !shingrixPQI &&
+        !dejaZona &&
         age >= 50;
 
     document.getElementById("resultat").innerHTML = `
@@ -340,29 +359,29 @@ function calculer(){
 
         <h3>Influenza</h3>
 
-        ${carte("PQI-Fluad gratuit", fluad)}
-        ${carte("PQI-Fluzone gratuit", fluzonePQI)}
-        ${carte("Fluzone avec frais (40 $). Minimum 6 mois.", fluzonePrive)}
+        ${carte("PQI-Fluad gratuit", fluad, "Critère : 75 ans et plus.")}
+        ${carte("PQI-Fluzone gratuit", fluzonePQI, "Critères (au moins un) : 65 à 74 ans, maladie chronique (diabète, asthme grave, maladie pulmonaire, insuffisance cardiaque ou rénale, IMC > 40), immunosuppression, résidence pour aînés, grossesse (2e ou 3e trimestre), proche aidant, travailleur de la santé.")}
+        ${carte("Fluzone avec frais (40 $). Minimum 6 mois.", fluzonePrive, "Critère : aucun critère PQI (Fluad ou Fluzone gratuit).")}
 
         <h3>COVID-19</h3>
 
-        ${carte("PQI-Spikevax gratuit", spikevaxPQI)}
-        ${carte("Comirnaty avec frais (163 $). Minimum 12 ans.", comirnatyPrive)}
+        ${carte("PQI-Spikevax gratuit", spikevaxPQI, "Critères (au moins un) : 65 ans et plus, maladie chronique, immunosuppression, résidence pour aînés, grossesse (2e ou 3e trimestre), travailleur de la santé.")}
+        ${carte("Comirnaty avec frais (163 $). Minimum 12 ans.", comirnatyPrive, "Critères : 12 ans et plus, sans critère PQI.")}
 
         <h3>Virus respiratoire syncytial (VRS)</h3>
 
-        ${carte("PQI-mResvia gratuit", mresviaPQI)}
-        ${carte("Abrysvo avec frais (299 $). Minimum 60 ans", abrysvoPrive)}
+        ${carte("PQI-mResvia gratuit", mresviaPQI, "Critère : 75 ans et plus.")}
+        ${carte("Abrysvo avec frais (299 $). Minimum 60 ans", abrysvoPrive, "Critères : 60 à 74 ans.")}
 
         <h3>Pneumocoque</h3>
 
-        ${carte("PQI-Capvaxive gratuit", capvaxivePQI)}
-        ${carte("Capvaxive avec frais (186 $). Minimum 18 ans.", capvaxivePrive)}
+        ${carte("PQI-Capvaxive gratuit", capvaxivePQI, "Critères : 65 ans et plus, ou 50 ans et plus avec maladie chronique ou immunosuppression. Exclu si déjà reçu un vaccin contre le pneumocoque.")}
+        ${carte("Capvaxive avec frais (186 $). Minimum 18 ans.", capvaxivePrive, "Critères : 18 ans et plus, sans critère PQI. Exclu si déjà reçu un vaccin contre le pneumocoque.")}
 
         <h3>Zona</h3>
 
-        ${carte("PQI-Shingrix gratuit", shingrixPQI)}
-        ${carte("Shingrix avec frais (239 $ x 2 doses). Minimum 50 ans", shingrixPrive)}
+        ${carte("PQI-Shingrix gratuit", shingrixPQI, "Critères : 71 ans et plus, ou 18 ans et plus avec immunosuppression. Exclu si déjà reçu deux doses contre le zona.")}
+        ${carte("Shingrix avec frais (239 $ x 2 doses). Minimum 50 ans", shingrixPrive, "Critères : 50 ans et plus, sans critère PQI. Exclu si déjà reçu deux doses contre le zona.")}
     `;
 }
 
