@@ -237,6 +237,22 @@ function calculAge(dateNaissance){
     return age;
 }
 
+function calculAgeMois(dateNaissance){
+
+    const aujourd = new Date();
+    const [annee, moisN, jour] = dateNaissance.split("-").map(Number);
+
+    let mois =
+        (aujourd.getFullYear() - annee) * 12 +
+        (aujourd.getMonth() - (moisN - 1));
+
+    if(aujourd.getDate() < jour){
+        mois--;
+    }
+
+    return mois;
+}
+
 function carte(titre,admissible,criteres){
 
     return `
@@ -259,6 +275,7 @@ function calculer(){
     }
 
     const age = calculAge(dateNaissance);
+    const ageMois = calculAgeMois(dateNaissance);
 
     const c6 =
         document.getElementById("c6").checked;
@@ -299,7 +316,8 @@ function calculer(){
         nbFacteurs > 0;
 
     const fluzonePrive =
-        !(fluad || fluzonePQI);
+        !(fluad || fluzonePQI) &&
+        ageMois >= 6;
 
     const spikevaxPQI =
         age75 ||
@@ -361,7 +379,7 @@ function calculer(){
 
         ${carte("PQI-Fluad gratuit", fluad, "Critère : 75 ans et plus.")}
         ${carte("PQI-Fluzone gratuit", fluzonePQI, "Critères (au moins un) : 65 à 74 ans, maladie chronique (diabète, asthme grave, maladie pulmonaire, insuffisance cardiaque ou rénale, IMC > 40), immunosuppression, résidence pour aînés, grossesse (2e ou 3e trimestre), proche aidant, travailleur de la santé.")}
-        ${carte("Fluzone avec frais (40 $). Minimum 6 mois.", fluzonePrive, "Critère : aucun critère PQI (Fluad ou Fluzone gratuit).")}
+        ${carte("Fluzone avec frais (40 $). Minimum 6 mois.", fluzonePrive, "Critères : 6 mois et plus, sans critère PQI (Fluad ou Fluzone gratuit).")}
 
         <h3>COVID-19</h3>
 
